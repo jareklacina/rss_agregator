@@ -1,0 +1,45 @@
+# RSS Digest Agent — konfigurační soubor
+
+feeds:
+  - name: "Deník N"
+    url: "https://denikn.cz/feed/"
+    auth: "denikn"
+  # Příklady dalších zdrojů — odkomentuj nebo přidej nové:
+  # - name: "Respekt"
+  #   url: "https://www.respekt.cz/rss"
+  #   auth: "none"
+  # - name: "ČT24"
+  #   url: "https://ct24.ceskatelevize.cz/rss/tema/zpravy"
+  #   auth: "none"
+  # - name: "iRozhlas"
+  #   url: "https://www.irozhlas.cz/rss/irozhlas"
+  #   auth: "none"
+
+# Autentizační strategie pro jednotlivé zdroje
+# Klíč = hodnota pole "auth" u feedu výše
+auth_strategies:
+  none:
+    type: "none"
+  denikn:
+    type: "cookie"
+    env_var: "DENIKN_COOKIE"  # název GitHub Secret / env proměnné
+
+# Okruhy pro filtrování relevance (použito v promptu)
+relevance_topics:
+  - "AI, technologie, věda"
+  - "Trump, Rusko, Írán, válka na Ukrajině"
+  - "Česká politika a aktuální dění"
+  - "Timothy Snyder"
+
+# Claude modely
+models:
+  filter: "claude-haiku-4-5-20251001"
+  summarize: "claude-sonnet-4-20250514"
+
+# Limity a rate limiting
+limits:
+  article_max_chars: 6000       # max znaků textu článku před sumarizací
+  filter_rate_limit: 1.0        # max requestů za sekundu (filtr)
+  summarize_rate_limit: 1.0     # max requestů za sekundu (sumarizace)
+  telegram_send_delay: 1.5      # pauza mezi Telegram zprávami (sekundy)
+  http_timeout: 30              # timeout pro HTTP requesty (sekundy)

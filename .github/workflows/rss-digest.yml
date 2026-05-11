@@ -1,0 +1,40 @@
+name: RSS Digest Agent
+
+on:
+  schedule:
+    # CET = UTC+1, CEST (léto) = UTC+2
+    # Cíl: 7:00, 12:00, 18:00 CET (zimní čas)
+    # V letním čase (CEST) běží o hodinu dřív — 6:00, 11:00, 17:00 místního času
+    # GitHub Actions cron nerespektuje letní čas, kompromis: zvoleny zimní časy
+    - cron: "0 6 * * *"   # 7:00 CET / 8:00 CEST
+    - cron: "0 11 * * *"  # 12:00 CET / 13:00 CEST
+    - cron: "0 17 * * *"  # 18:00 CET / 19:00 CEST
+  workflow_dispatch:       # Možnost spustit ručně z GitHub UI
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run RSS Digest Agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DENIKN_COOKIE: ${{ secrets.DENIKN_COOKIE }}
+        run: python main.py

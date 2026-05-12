@@ -6,9 +6,9 @@ on:
     # Cíl: 7:00, 12:00, 18:00 CET (zimní čas)
     # V letním čase (CEST) běží o hodinu dřív — 6:00, 11:00, 17:00 místního času
     # GitHub Actions cron nerespektuje letní čas, kompromis: zvoleny zimní časy
-    - cron: "0 6 * * *"   # 7:00 CET / 8:00 CEST
-    - cron: "0 11 * * *"  # 12:00 CET / 13:00 CEST
-    - cron: "0 17 * * *"  # 18:00 CET / 19:00 CEST
+    - cron: "7 5 * * *"   # ~7:07 CET / ~7:07 CEST (posunuté mimo špičku)
+    - cron: "7 10 * * *"  # ~12:07 CET / ~12:07 CEST
+    - cron: "7 16 * * *"  # ~18:07 CET / ~18:07 CEST
   workflow_dispatch:       # Možnost spustit ručně z GitHub UI
 
 jobs:

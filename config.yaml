@@ -4,16 +4,9 @@ feeds:
   - name: "Deník N"
     url: "https://denikn.cz/feed/"
     auth: "denikn"
-  # Příklady dalších zdrojů — odkomentuj nebo přidej nové:
-  # - name: "Respekt"
-  #   url: "https://www.respekt.cz/rss"
-  #   auth: "none"
-  # - name: "ČT24"
-  #   url: "https://ct24.ceskatelevize.cz/rss/tema/zpravy"
-  #   auth: "none"
-  # - name: "iRozhlas"
-  #   url: "https://www.irozhlas.cz/rss/irozhlas"
-  #   auth: "none"
+  - name: "ČT24"
+    url: "https://ct24.ceskatelevize.cz/rss/tema/vyber-redakce-84313"
+    auth: "none"
 
 # Autentizační strategie pro jednotlivé zdroje
 # Klíč = hodnota pole "auth" u feedu výše

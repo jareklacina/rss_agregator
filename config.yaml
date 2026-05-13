@@ -34,5 +34,5 @@ limits:
   article_max_chars: 6000       # max znaků textu článku před sumarizací
   filter_rate_limit: 1.0        # max requestů za sekundu (filtr)
   summarize_rate_limit: 1.0     # max requestů za sekundu (sumarizace)
-  telegram_send_delay: 1.5      # pauza mezi Telegram zprávami (sekundy)
+  telegram_send_delay: 3.5      # pauza mezi Telegram zprávami (sekundy)
   http_timeout: 30              # timeout pro HTTP requesty (sekundy)

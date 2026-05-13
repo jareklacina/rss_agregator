@@ -54,7 +54,7 @@ def format_message(article: Any) -> str:
 
 
 def send_message(text: str, token: str, chat_id: str) -> bool:
-    """Odešle jednu zprávu do Telegram kanálu. Vrátí True při úspěchu."""
+    """Odešle jednu zprávu do Telegram kanálu. Při 429 počká a zkusí znovu."""
     url = TELEGRAM_API.format(token=token)
     payload = {
         "chat_id": chat_id,
@@ -62,16 +62,24 @@ def send_message(text: str, token: str, chat_id: str) -> bool:
         "parse_mode": "Markdown",
         "disable_web_page_preview": False,
     }
-    try:
-        resp = httpx.post(url, json=payload, timeout=30)
-        resp.raise_for_status()
-        return True
-    except httpx.HTTPStatusError as exc:
-        logger.error("Telegram API chyba %d: %s", exc.response.status_code, exc.response.text[:200])
-        return False
-    except Exception as exc:
-        logger.error("Chyba při odesílání do Telegramu: %s", exc)
-        return False
+    for attempt in range(3):
+        try:
+            resp = httpx.post(url, json=payload, timeout=30)
+            if resp.status_code == 429:
+                retry_after = resp.json().get("parameters", {}).get("retry_after", 30)
+                logger.warning("Telegram rate limit, čekám %d sekund", retry_after)
+                time.sleep(retry_after)
+                continue
+            resp.raise_for_status()
+            return True
+        except httpx.HTTPStatusError as exc:
+            logger.error("Telegram API chyba %d: %s", exc.response.status_code, exc.response.text[:200])
+            return False
+        except Exception as exc:
+            logger.error("Chyba při odesílání do Telegramu: %s", exc)
+            return False
+    logger.error("Telegram: vyčerpány pokusy o odeslání")
+    return False
 
 
 def send_all(articles: list[Any], send_delay: float = 1.5) -> int:
